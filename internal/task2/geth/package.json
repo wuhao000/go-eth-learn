@@ -1,0 +1,14 @@
+{
+  "name": "private-chain-contract-deployment",
+  "version": "1.0.0",
+  "description": "Deploy contracts to private Ethereum chain",
+  "main": "deploy.js",
+  "scripts": {
+    "deploy": "node deploy.js",
+    "interact": "node interact.js"
+  },
+  "dependencies": {
+    "solc": "^0.8.19",
+    "web3": "^4.2.0"
+  }
+}

@@ -4,8 +4,10 @@ import (
   "context"
   "errors"
   "fmt"
+  "go-eth-learn/internal/config"
   "go-eth-learn/internal/utils"
   "log"
+  "os"
   "testing"
 
   "github.com/ethereum/go-ethereum/accounts/abi/bind"
@@ -39,4 +41,14 @@ func TestLoad(t *testing.T) {
     log.Fatal(rpcErr.Error())
   }
   fmt.Println(tr.Cost())
+}
+
+// TestMain 在包中的所有测试运行前执行一次，用于统一初始化
+func TestMain(m *testing.M) {
+  // 统一初始化配置
+  config.InitConfig()
+
+  // 运行所有测试
+  code := m.Run()
+  os.Exit(code)
 }

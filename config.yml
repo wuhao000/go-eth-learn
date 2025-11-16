@@ -1,0 +1,28 @@
+# 测试配置文件
+app:
+  name: "go-eth-learn"
+  version: "1.0.0"
+  environment: "test"
+
+infura:
+  api_key: "f05f2e17cd7a4b9caf9a06d507c042a1"  # 需要填入真实的API Key
+  sepolia_url: "https://sepolia.infura.io/v3"
+  mainnet_url: "https://mainnet.infura.io/v3"
+  goerli_url: "https://goerli.infura.io/v3"
+
+network:
+  default_network: "sepolia"
+  timeout: 30
+
+log:
+  level: "error"  # 测试时减少日志输出
+  file: "logs/test.log"
+  max_size: 10
+  max_backups: 1
+  max_age: 7
+
+server:
+  host: "localhost"
+  port: 8080
+  read_timeout: 30
+  write_timeout: 30

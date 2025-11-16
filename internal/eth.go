@@ -7,6 +7,7 @@ import (
   "log"
   "math/big"
   "strings"
+  "time"
 
   "github.com/ethereum/go-ethereum/accounts/abi"
   "github.com/ethereum/go-ethereum/common"
@@ -130,32 +131,35 @@ func GetBalance(address common.Address) (*big.Int, *big.Float, error) {
 }
 
 func SubscribeBlock() {
-  // 1️⃣ 连接到节点（必须是 WebSocket）
-  client, err := ethclient.Dial("wss://sepolia.infura.io/ws/v3/f05f2e17cd7a4b9caf9a06d507c042a1")
+  // 使用现有的客户端连接进行轮询
+  ethClient, err := GetSepoliaClient()
   if err != nil {
     log.Fatalf("Failed to connect to Ethereum node: %v", err)
   }
+  defer ethClient.Close()
 
-  // 2️⃣ 创建一个接收区块头的 channel
-  headers := make(chan *types.Header)
+  fmt.Println("🚀 开始定时轮询新区块...")
 
-  // 3️⃣ 开始订阅新区块头
-  sub, err := client.SubscribeNewHead(context.Background(), headers)
-  if err != nil {
-    log.Fatalf("Failed to subscribe to new head: %v", err)
-  }
+  // 记录上一个区块号，用于检测新区块
+  var lastBlockNumber *big.Int
+  ticker := time.NewTicker(5 * time.Second) // 每5秒轮询一次
+  defer ticker.Stop()
 
-  fmt.Println("🚀 Listening for new blocks...")
-
-  // 4️⃣ 不断读取新的区块头
   for {
     select {
-    case err := <-sub.Err():
-      log.Printf("Subscription error: %v", err)
-      return
+    case <-ticker.C:
+      // 获取最新区块头
+      header, err := ethClient.GetLatestHeader()
+      if err != nil {
+        log.Printf("获取区块头失败: %v", err)
+        continue
+      }
 
-    case header := <-headers:
-      fmt.Printf("⛓️ New Block #%v, Hash: %s\n", header.Number.String(), header.Hash().Hex())
+      // 检查是否是新区块
+      if lastBlockNumber == nil || header.Number.Cmp(lastBlockNumber) > 0 {
+        fmt.Printf("⛓️ 新区块 #%v, Hash: %s\n", header.Number.String(), header.Hash().Hex())
+        lastBlockNumber = header.Number
+      }
     }
   }
 }

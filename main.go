@@ -5,11 +5,15 @@ import (
   "go-eth-learn/internal/task1"
   "go-eth-learn/internal/utils"
   "log"
+  "time"
 
   "go-eth-learn/internal"
+  "go-eth-learn/internal/config"
 )
 
 func main() {
+  // 加载配置
+  config.LoadConfig()
   fmt.Println("=== 以太坊 Sepolia 区块头查询演示 ===\n")
   // 演示1: 获取最新区块头
   fmt.Println("1. 获取Sepolia最新区块头:")
@@ -18,7 +22,9 @@ func main() {
     log.Fatalf("获取最新区块头失败: %v", err)
   }
   internal.PrintHeaderInfo(latestHeader)
-  internal.SubscribeBlock()
+
+  // 启动区块监听（在后台运行）
+  go internal.SubscribeBlock()
 
   // 演示2: 获取指定区块号的区块头
   fmt.Println("\n2. 获取Sepolia指定区块号的区块头:")
@@ -56,5 +62,10 @@ func main() {
   }
   task1.PrintBlock(block)
   defer utils.GetClient().Close()
+
+  // 等待一段时间观察轮询效果
+  fmt.Println("\n等待15秒观察区块轮询效果...")
+  time.Sleep(15 * time.Second)
+
   fmt.Println("\n=== 演示完成 ===")
 }

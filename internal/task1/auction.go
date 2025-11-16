@@ -453,3 +453,4 @@ func (_Auction *AuctionSession) Withdraw() (*types.Transaction, error) {
 func (_Auction *AuctionTransactorSession) Withdraw() (*types.Transaction, error) {
   return _Auction.Contract.Withdraw(&_Auction.TransactOpts)
 }
+

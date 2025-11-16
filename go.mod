@@ -2,7 +2,10 @@ module go-eth-learn
 
 go 1.25
 
-require github.com/ethereum/go-ethereum v1.16.7
+require (
+	github.com/ethereum/go-ethereum v1.16.7
+	gopkg.in/yaml.v3 v3.0.1
+)
 
 require (
 	github.com/Microsoft/go-winio v0.6.2 // indirect
